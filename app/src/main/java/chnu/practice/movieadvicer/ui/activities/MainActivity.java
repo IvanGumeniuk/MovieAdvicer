@@ -1,19 +1,18 @@
-package chnu.practice.movieadvicer.activities;
+package chnu.practice.movieadvicer.ui.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import chnu.practice.movieadvicer.R;
-import chnu.practice.movieadvicer.adapters.SectionPageAdapter;
 import chnu.practice.movieadvicer.consts.Constants;
-import chnu.practice.movieadvicer.fragments.FavoriteFragment;
-import chnu.practice.movieadvicer.fragments.GenresFragment;
-import chnu.practice.movieadvicer.fragments.TopFragment;
+import chnu.practice.movieadvicer.ui.adapters.SectionPageAdapter;
+import chnu.practice.movieadvicer.ui.fragments.FavoriteFragment;
+import chnu.practice.movieadvicer.ui.fragments.GenresFragment;
+import chnu.practice.movieadvicer.ui.fragments.TopFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

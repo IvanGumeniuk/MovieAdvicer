@@ -1,4 +1,4 @@
-package chnu.practice.movieadvicer.fragments;
+package chnu.practice.movieadvicer.ui.fragments;
 
 
 import android.os.Bundle;
@@ -16,7 +16,11 @@ public class TopFragment extends Fragment {
 
 
     public TopFragment() {
-        // Required empty public constructor
+    }
+
+    public static TopFragment getInstance(){
+        TopFragment fragment = new TopFragment();
+        return fragment;
     }
 
 

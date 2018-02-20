@@ -1,10 +1,11 @@
-package chnu.practice.movieadvicer.models;
+package chnu.practice.movieadvicer.models.MovieModel;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Result {
+public class Result implements Serializable {
 
     @SerializedName("vote_count")
     public Integer voteCount;

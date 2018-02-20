@@ -1,53 +1,65 @@
 package chnu.practice.movieadvicer.presenters;
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
+import android.widget.Toast;
 
-import chnu.practice.movieadvicer.adapters.GenreRecyclerAdapter;
+import chnu.practice.movieadvicer.DefaultCallback;
 import chnu.practice.movieadvicer.api.ApiService;
-import chnu.practice.movieadvicer.api.RetrofitBase;
+import chnu.practice.movieadvicer.app.RetrofitBase;
 import chnu.practice.movieadvicer.consts.Constants;
+import chnu.practice.movieadvicer.contracts.IGenresContract;
 import chnu.practice.movieadvicer.models.GenreModel.Genres;
-import chnu.practice.movieadvicer.ui.IGenresContract;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import chnu.practice.movieadvicer.models.MovieModel.Movies;
+import okhttp3.ResponseBody;
 
-public class GenresPresenter implements IGenresContract.IGenresPresenter {
+public class GenresPresenter extends BasePresenter implements IGenresContract.IGenresPresenter {
 
-    private IGenresContract.IGenresView gView;
-    private ApiService apiRequest;
-    private RecyclerView recyclerView;
+    private IGenresContract.IGenresView mView;
+    private ApiService mApiRequest;
+    private RetrofitBase mRetrofitBase;
 
-
-    public GenresPresenter(IGenresContract.IGenresView gView, RecyclerView recyclerView) {
-        this.gView = gView;
-        apiRequest = new RetrofitBase().initRetrofit().create(ApiService.class);
-        this.recyclerView = recyclerView;
+    public GenresPresenter(IGenresContract.IGenresView gView) {
+        this.mView = gView;
+        mRetrofitBase = RetrofitBase.getInstance();
+        mApiRequest = mRetrofitBase.getRetrofit().create(ApiService.class);
     }
-
 
     @Override
     public void genresRequest() {
-        gView.showProgress();
+        mView.showProgress();
 
-        apiRequest.getGenres(Constants.API_KEY, Constants.LANGUAGE_PARAM).enqueue(new Callback<Genres>() {
+        mApiRequest.getGenres(Constants.API_KEY, Constants.LANGUAGE_PARAM).enqueue(new DefaultCallback<Genres>() {
             @Override
-            public void onResponse(Call<Genres> call, Response<Genres> response) {
-                getGenres(response.body());
+            public void onSuccess(Genres response) {
+                mView.hideProgress();
+                mView.showGenres(response);
             }
 
             @Override
-            public void onFailure(Call<Genres> call, Throwable t) {
-                gView.showError(t.getMessage());
+            public void onError(ResponseBody body, String message) {
+                mView.hideProgress();
+                mView.showError(message);
             }
         });
-
-        gView.hideProgress();
     }
 
     @Override
-    public void getGenres(Genres genres) {
-        recyclerView.setAdapter(new GenreRecyclerAdapter(genres, gView.getViewContext()));
+    public void moviesRequest(int genreId, final Context context) {
+        mView.showProgress();
+        mApiRequest.getMoviesByGenre(genreId, Constants.API_KEY, Constants.LANGUAGE_PARAM,
+                false, Constants.SORT_BY).enqueue(new DefaultCallback<Movies>() {
+            @Override
+            public void onSuccess(Movies response) {
+                Toast.makeText(context, "Success "+ response.totalPages, Toast.LENGTH_SHORT).show();
+                mView.hideProgress();
+            }
+
+            @Override
+            public void onError(ResponseBody body, String message) {
+                mView.hideProgress();
+                mView.showError(message);
+            }
+        });
     }
 
 

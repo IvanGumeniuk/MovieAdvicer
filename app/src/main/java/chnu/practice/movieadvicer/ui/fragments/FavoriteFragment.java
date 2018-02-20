@@ -1,4 +1,4 @@
-package chnu.practice.movieadvicer.fragments;
+package chnu.practice.movieadvicer.ui.fragments;
 
 
 import android.os.Bundle;
@@ -9,22 +9,25 @@ import android.view.ViewGroup;
 
 import chnu.practice.movieadvicer.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class FavoriteFragment extends Fragment {
 
 
     public FavoriteFragment() {
-        // Required empty public constructor
+    }
+
+    public static FavoriteFragment getInstance(){
+        FavoriteFragment fragment = new FavoriteFragment();
+        return fragment;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
+
+        return view;
     }
 
 }

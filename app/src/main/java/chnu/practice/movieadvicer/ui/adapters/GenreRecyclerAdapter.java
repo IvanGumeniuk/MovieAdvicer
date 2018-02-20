@@ -1,12 +1,10 @@
-package chnu.practice.movieadvicer.adapters;
+package chnu.practice.movieadvicer.ui.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import chnu.practice.movieadvicer.R;
 import chnu.practice.movieadvicer.models.GenreModel.Genre;
@@ -16,11 +14,20 @@ import chnu.practice.movieadvicer.models.GenreModel.Genres;
 public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdapter.GenreViewHolder> {
 
     private Genres genres;
-    private Context context;
 
-    public GenreRecyclerAdapter(Genres genres, Context context) {
+    public interface GenreRecyclerAdapterInterface {
+        void onGenreClick(Genre genre);
+    }
+
+    GenreRecyclerAdapterInterface mListener;
+
+    public GenreRecyclerAdapter(GenreRecyclerAdapterInterface adapterInterface) {
+        mListener = adapterInterface;
+    }
+
+    public void setDate(Genres genres){
         this.genres = genres;
-        this.context = context;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -37,14 +44,16 @@ public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdap
         holder.genreItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Clicked on " + item.getName(), Toast.LENGTH_SHORT).show();
+                if (mListener != null){
+                    mListener.onGenreClick(item);
+                }
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return genres.getGenres().size();
+        return genres != null && genres.getGenres() != null ? genres.getGenres().size() : 0;
     }
 
 

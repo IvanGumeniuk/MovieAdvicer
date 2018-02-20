@@ -1,4 +1,4 @@
-package chnu.practice.movieadvicer.adapters;
+package chnu.practice.movieadvicer.ui.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

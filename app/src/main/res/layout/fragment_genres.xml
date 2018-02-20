@@ -2,14 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="chnu.practice.movieadvicer.fragments.GenresFragment"
+    tools:context=".ui.fragments.GenresFragment"
     android:background="@color/item_background">
 
+<android.support.v4.widget.SwipeRefreshLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipeRefreshLayout">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/genre_recycler"/>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+
 
 
 </FrameLayout>
