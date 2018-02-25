@@ -3,6 +3,8 @@
     package="chnu.practice.movieadvicer">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- api key : cdfc4ab5a9d6849d6596428aa52851cb -->
     <application

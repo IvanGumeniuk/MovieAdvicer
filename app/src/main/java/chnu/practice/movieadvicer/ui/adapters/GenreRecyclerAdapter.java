@@ -25,7 +25,7 @@ public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdap
         mListener = adapterInterface;
     }
 
-    public void setDate(Genres genres){
+    public void setData(Genres genres){
         this.genres = genres;
         notifyDataSetChanged();
     }

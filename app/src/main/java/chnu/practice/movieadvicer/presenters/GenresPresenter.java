@@ -1,27 +1,27 @@
 package chnu.practice.movieadvicer.presenters;
 
-import android.content.Context;
-import android.widget.Toast;
-
 import chnu.practice.movieadvicer.DefaultCallback;
 import chnu.practice.movieadvicer.api.ApiService;
 import chnu.practice.movieadvicer.app.RetrofitBase;
 import chnu.practice.movieadvicer.consts.Constants;
 import chnu.practice.movieadvicer.contracts.IGenresContract;
+import chnu.practice.movieadvicer.dataSource.FileDataSource;
 import chnu.practice.movieadvicer.models.GenreModel.Genres;
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
 import okhttp3.ResponseBody;
 
-public class GenresPresenter extends BasePresenter implements IGenresContract.IGenresPresenter {
+public class GenresPresenter implements IGenresContract.IPresenter,
+        FileDataSource.OnDataChangeListener {
 
-    private IGenresContract.IGenresView mView;
+    private IGenresContract.IView mView;
     private ApiService mApiRequest;
-    private RetrofitBase mRetrofitBase;
+    private FileDataSource mDataSource;
 
-    public GenresPresenter(IGenresContract.IGenresView gView) {
+    public GenresPresenter(IGenresContract.IView gView) {
         this.mView = gView;
-        mRetrofitBase = RetrofitBase.getInstance();
+        RetrofitBase mRetrofitBase = RetrofitBase.getInstance();
         mApiRequest = mRetrofitBase.getRetrofit().create(ApiService.class);
+        mDataSource = FileDataSource.getInstance(this);
     }
 
     @Override
@@ -44,14 +44,15 @@ public class GenresPresenter extends BasePresenter implements IGenresContract.IG
     }
 
     @Override
-    public void moviesRequest(int genreId, final Context context) {
+    public void moviesRequest(final int genreId) {
         mView.showProgress();
         mApiRequest.getMoviesByGenre(genreId, Constants.API_KEY, Constants.LANGUAGE_PARAM,
                 false, Constants.SORT_BY).enqueue(new DefaultCallback<Movies>() {
             @Override
             public void onSuccess(Movies response) {
-                Toast.makeText(context, "Success "+ response.totalPages, Toast.LENGTH_SHORT).show();
+                mDataSource.saveMoviesByGenre(genreId, response);
                 mView.hideProgress();
+                mView.toMovieActivity();
             }
 
             @Override
@@ -62,5 +63,13 @@ public class GenresPresenter extends BasePresenter implements IGenresContract.IG
         });
     }
 
+    @Override
+    public void onDataSaved(String message) {
+        mView.showToast(message);
+    }
 
+    @Override
+    public void onDataOpened(Movies results) {
+        mView.showToast("opened");
+    }
 }

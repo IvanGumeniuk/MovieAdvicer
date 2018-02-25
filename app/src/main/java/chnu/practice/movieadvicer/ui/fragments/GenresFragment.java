@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import chnu.practice.movieadvicer.R;
 import chnu.practice.movieadvicer.app.Navigation;
@@ -18,12 +19,12 @@ import chnu.practice.movieadvicer.models.GenreModel.Genres;
 import chnu.practice.movieadvicer.presenters.GenresPresenter;
 import chnu.practice.movieadvicer.ui.adapters.GenreRecyclerAdapter;
 
-public class GenresFragment extends BaseFragment implements IGenresContract.IGenresView,
+public class GenresFragment extends BaseFragment implements IGenresContract.IView,
         GenreRecyclerAdapter.GenreRecyclerAdapterInterface {
 
-    SwipeRefreshLayout mSwipeRefreshLayout;
-    GenreRecyclerAdapter mAdapter;
-    private IGenresContract.IGenresPresenter presenter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private GenreRecyclerAdapter mAdapter;
+    private IGenresContract.IPresenter presenter;
     private RecyclerView recyclerView;
 
     public GenresFragment() {
@@ -77,8 +78,13 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IGen
     }
 
     @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void showGenres(Genres genres) {
-        mAdapter.setDate(genres);
+        mAdapter.setData(genres);
     }
 
     @Override
@@ -88,7 +94,7 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IGen
 
     @Override
     public void onGenreClick(Genre genre) {
-        presenter.moviesRequest(genre.getId(), getActivity());
+        presenter.moviesRequest(genre.getId());
     }
 
 
