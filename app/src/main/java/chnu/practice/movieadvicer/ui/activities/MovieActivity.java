@@ -1,7 +1,7 @@
 package chnu.practice.movieadvicer.ui.activities;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
@@ -18,14 +18,15 @@ public class MovieActivity extends BaseActivity implements
 
     private RecyclerView mRecyclerView;
     private MoviesRecyclerAdapter mAdapter;
-    private ProgressDialog mProgressDialog;
     private IMoviesContract.IPresenter mPresenter;
+    private SwipeRefreshLayout mRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
+        mRefreshLayout = findViewById(R.id.moviesSwipeRefreshLayout);
         mAdapter = new MoviesRecyclerAdapter(this);
         mPresenter = new MoviesPresenter(this);
         mRecyclerView = findViewById(R.id.movieRecyclerView);
@@ -53,19 +54,12 @@ public class MovieActivity extends BaseActivity implements
 
     @Override
     public void showProgress() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-        }
-        mProgressDialog.show();
+        mRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
+       mRefreshLayout.setRefreshing(false);
     }
 
     @Override

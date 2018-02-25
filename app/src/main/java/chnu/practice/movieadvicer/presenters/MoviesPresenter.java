@@ -14,7 +14,7 @@ import okhttp3.ResponseBody;
  */
 
 public class MoviesPresenter implements IMoviesContract.IPresenter,
-        FileDataSource.OnDataChangeListener{
+        FileDataSource.OnDataChangeListener {
 
     private IMoviesContract.IView mView;
     private ApiService mApiService;
@@ -30,19 +30,22 @@ public class MoviesPresenter implements IMoviesContract.IPresenter,
 
     @Override
     public void loadNextPage(int page) {
-       mApiService.getMoviesByGenreWithPage(mDataSource.getGenreId(), Constants.API_KEY,
-               Constants.LANGUAGE_PARAM, false, Constants.SORT_BY, ++page).enqueue(new DefaultCallback<Movies>() {
-           @Override
-           public void onSuccess(Movies response) {
-               mDataSource.updateMovies(response);
-               mView.showMovies(mDataSource.getMoviesByGenre());
-           }
+        mView.showProgress();
+        mApiService.getMoviesByGenreWithPage(mDataSource.getGenreId(), Constants.API_KEY,
+                Constants.LANGUAGE_PARAM, false, Constants.SORT_BY, ++page).enqueue(new DefaultCallback<Movies>() {
+            @Override
+            public void onSuccess(Movies response) {
+                mDataSource.updateMovies(response);
+                mView.showMovies(mDataSource.getMoviesByGenre());
+                mView.hideProgress();
+            }
 
-           @Override
-           public void onError(ResponseBody body, String message) {
+            @Override
+            public void onError(ResponseBody body, String message) {
                 mView.showError(message);
-           }
-       });
+                mView.hideProgress();
+            }
+        });
     }
 
 

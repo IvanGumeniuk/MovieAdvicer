@@ -66,8 +66,8 @@ public class FileDataSource {
     }
 
     public void updateMovies(Movies movies){
-        this.mMoviesByGenre.page++;
         this.mMoviesByGenre.results.addAll(movies.results);
+        this.mMoviesByGenre.page++;
     }
 
     public int getGenreId() {
