@@ -31,4 +31,8 @@
         <activity android:name=".ui.activities.MovieActivity"></activity>
     </application>
 
+    <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="MainActivity" />
+
 </manifest>

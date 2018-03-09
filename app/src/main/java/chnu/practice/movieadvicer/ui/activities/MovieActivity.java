@@ -16,36 +16,61 @@ import chnu.practice.movieadvicer.ui.adapters.MoviesRecyclerAdapter;
 public class MovieActivity extends BaseActivity implements
         MoviesRecyclerAdapter.MoviesItemClickListener, IMoviesContract.IView{
 
-    private RecyclerView mRecyclerView;
     private MoviesRecyclerAdapter mAdapter;
     private IMoviesContract.IPresenter mPresenter;
     private SwipeRefreshLayout mRefreshLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mRefreshLayout = findViewById(R.id.moviesSwipeRefreshLayout);
         mAdapter = new MoviesRecyclerAdapter(this);
         mPresenter = new MoviesPresenter(this);
-        mRecyclerView = findViewById(R.id.movieRecyclerView);
+        RecyclerView mRecyclerView = findViewById(R.id.movieRecyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
+
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.refresh();
+            }
+        });
     }
 
     @Override
-    public void OnClick(Result result) {
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    @Override
+    public void OnMovieClick(Result result) {
             Toast.makeText(this, "need to open new activity", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void OnClick(int page) {
-            Toast.makeText(this, String.valueOf(page), Toast.LENGTH_SHORT).show();
+    public void OnShowMoreClick(int page) {
             mPresenter.loadNextPage(page);
+
     }
 
+    @Override
+    public void OnFavoriteImageClick(Result result) {
+        if(!result.isFavorite()){
+            result.setFavorite(true);
+            mPresenter.addFavorite(result);
+        } else {
+            result.setFavorite(false);
+            mPresenter.removeFavorite(result);
+        }
+        mPresenter.updateMoviesByGenre();
+    }
 
     @Override
     public void showMovies(Movies movies) {
@@ -62,13 +87,5 @@ public class MovieActivity extends BaseActivity implements
        mRefreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 }

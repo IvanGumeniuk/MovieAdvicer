@@ -15,4 +15,5 @@
     <string name="loading">Loading...</string>
     <string name="votes">Votes:</string>
     <string name="date_of_release">Date of release:</string>
+    <string name="release">Release: </string>
 </resources>

@@ -49,4 +49,13 @@ public class Result implements Serializable {
     @SerializedName("release_date")
     public String releaseDate;
 
+    private boolean favorite;
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
 }

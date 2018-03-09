@@ -1,6 +1,7 @@
 package chnu.practice.movieadvicer.contracts;
 
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
+import chnu.practice.movieadvicer.models.MovieModel.Result;
 
 /**
  * Created by Ваня on 24.02.2018.
@@ -8,10 +9,14 @@ import chnu.practice.movieadvicer.models.MovieModel.Movies;
 
 public interface IMoviesContract extends BaseContract {
     interface IView extends BaseContract.IView{
-        public void showMovies(Movies movies);
+        void showMovies(Movies movies);
     }
 
     interface IPresenter extends BaseContract.IPresenter{
-        public void loadNextPage(int page);
+        void loadNextPage(int page);
+        void refresh();
+        void updateMoviesByGenre();
+        void addFavorite(Result result);
+        void removeFavorite(Result result);
     }
 }

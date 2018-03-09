@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/movieName"
                 android:layout_toEndOf="@+id/moviePoster"
-                android:text="@string/date_of_release" />
+                android:text="@string/release" />
 
             <TextView
                 android:id="@+id/movieDescription"
@@ -88,6 +88,14 @@
                 android:gravity="bottom"
                 tools:text = "total votes"
                 />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageFavorite"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:paddingEnd="2dp"
+                android:layout_alignEnd="@id/movieVote"
+                android:layout_alignBottom="@id/moviePoster"/>
 
         </RelativeLayout>
 

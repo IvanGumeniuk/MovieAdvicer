@@ -15,9 +15,6 @@ import chnu.practice.movieadvicer.consts.Constants;
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
 import chnu.practice.movieadvicer.models.MovieModel.Result;
 
-/**
- * Created by Ваня on 22.02.2018.
- */
 
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -62,12 +59,12 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MoviesViewHolder) {
             final Result item = mMovies.results.get(position);
-            MoviesViewHolder moviesViewHolder = (MoviesViewHolder) holder;
+            final MoviesViewHolder moviesViewHolder = (MoviesViewHolder) holder;
             moviesViewHolder.mMovieCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (mItemClickListener != null) {
-                        mItemClickListener.OnClick(item);
+                        mItemClickListener.OnMovieClick(item);
                     }
                 }
             });
@@ -81,13 +78,37 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .placeholder(R.drawable.picasso_placeholder)
                     .resize(200, 250)
                     .into(moviesViewHolder.mMoviePoster);
+
+            moviesViewHolder.mFavoriteImage.setImageResource(item.isFavorite() ? R.drawable.ic_like
+                    : R.drawable.ic_not_like);
+
+            moviesViewHolder.mFavoriteImage.setTag(item.isFavorite() ? Constants.IS_FAVORITE
+                    : Constants.IS_NOT_FAVORITE);
+
+            moviesViewHolder.mFavoriteImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int imageResource = R.drawable.ic_not_like;
+                    int imageTag = Constants.IS_NOT_FAVORITE;
+                    if((int)moviesViewHolder.mFavoriteImage.getTag() == Constants.IS_NOT_FAVORITE){
+                        imageResource = R.drawable.ic_like;
+                        imageTag = Constants.IS_FAVORITE;
+                    }
+                    moviesViewHolder.mFavoriteImage.setTag(imageTag);
+                    moviesViewHolder.mFavoriteImage.setImageResource(imageResource);
+                    if(mItemClickListener != null){
+                        mItemClickListener.OnFavoriteImageClick(item);
+                    }
+                }
+            });
+
         } else if (holder instanceof FooterViewHolder) {
             FooterViewHolder footerHolder = (FooterViewHolder) holder;
             footerHolder.mFooterText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (mItemClickListener != null) {
-                        mItemClickListener.OnClick(mMovies.page);
+                        mItemClickListener.OnShowMoreClick(mMovies.page);
                     }
                 }
             });
@@ -110,9 +131,11 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public interface MoviesItemClickListener {
-        void OnClick(Result result);
+        void OnMovieClick(Result result);
 
-        void OnClick(int page);
+        void OnShowMoreClick(int page);
+
+        void OnFavoriteImageClick(Result result);
     }
 
     class FooterViewHolder extends RecyclerView.ViewHolder {
@@ -132,9 +155,11 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private ImageView mMoviePoster;
         private TextView mMovieVote;
         private TextView mMovieTotalVotes;
+        private ImageView mFavoriteImage;
 
         public MoviesViewHolder(View itemView) {
             super(itemView);
+            mFavoriteImage = itemView.findViewById(R.id.imageFavorite);
             mMovieCardView = itemView.findViewById(R.id.movieCardView);
             mMovieName = itemView.findViewById(R.id.movieName);
             mMovieDescription = itemView.findViewById(R.id.movieDescription);

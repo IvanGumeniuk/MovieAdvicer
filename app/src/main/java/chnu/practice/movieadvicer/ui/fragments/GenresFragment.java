@@ -1,6 +1,7 @@
 package chnu.practice.movieadvicer.ui.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import chnu.practice.movieadvicer.R;
 import chnu.practice.movieadvicer.app.Navigation;
@@ -78,11 +78,6 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
     }
 
     @Override
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void showGenres(Genres genres) {
         mAdapter.setData(genres);
     }
@@ -90,6 +85,11 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
     @Override
     public void toMovieActivity() {
         Navigation.toMovieScreen(getActivity());
+    }
+
+    @Override
+    public Activity getViewActivity() {
+            return getActivity();
     }
 
     @Override
