@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import chnu.practice.movieadvicer.R;
+import chnu.practice.movieadvicer.consts.BundleKeys;
 import chnu.practice.movieadvicer.contracts.IMoviesContract;
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
 import chnu.practice.movieadvicer.models.MovieModel.Result;
@@ -28,7 +29,7 @@ public class MovieActivity extends BaseActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mRefreshLayout = findViewById(R.id.moviesSwipeRefreshLayout);
-        mAdapter = new MoviesRecyclerAdapter(this);
+        mAdapter = new MoviesRecyclerAdapter(this, BundleKeys.MOVIES_BY_GENRE_MODE.ordinal());
         mPresenter = new MoviesPresenter(this);
         RecyclerView mRecyclerView = findViewById(R.id.movieRecyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -57,7 +58,6 @@ public class MovieActivity extends BaseActivity implements
     @Override
     public void OnShowMoreClick(int page) {
             mPresenter.loadNextPage(page);
-
     }
 
     @Override

@@ -13,7 +13,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
@@ -23,17 +25,28 @@ public class FileDataSource {
 
     private static final String TAGG = "FILE_DATA_SOURCE";
     private static final String MOVIES_BY_GENRES_FILE_NAME = "MOVIES_BY_GENRE_FILE.txt";
+    private static final String ID_FAVORITE_FILE_NAME = "ID_FAVORITE_FILE.txt";
     private static final String MOVIES_FAVORITE_FILE_NAME = "MOVIES_FAVORITE_FILE.txt";
     private static FileDataSource sInstance = new FileDataSource();
-    private File mGenresMoviesFile, mFavoriteMovies;
+    private File mGenresMoviesFile, mFavoriteIdFile, mFavoriteMoviesFile;
     private Gson gson;
     private Movies mMoviesByGenre;
-    private Set<Integer> mMoviesFavorite = new HashSet<>();
+    private Set<Integer> mFavoriteId;
+    private List<Result> mFavoriteMovies;
     private int genreId;
+    private favListener mListener;
 
+    public interface favListener{
+        void onChange(List<Result> results);
+    }
     private FileDataSource() {
         gson = new Gson();
+
         openDataSource();
+    }
+
+    public void setOnChange(favListener listener){
+        this.mListener = listener;
     }
 
     public static FileDataSource getInstance() {
@@ -43,15 +56,24 @@ public class FileDataSource {
     private void openDataSource() {
         File sdcard = Environment.getExternalStorageDirectory();
         mGenresMoviesFile = new File(sdcard, MOVIES_BY_GENRES_FILE_NAME);
-        mFavoriteMovies = new File(sdcard, MOVIES_FAVORITE_FILE_NAME);
+        mFavoriteIdFile = new File(sdcard, ID_FAVORITE_FILE_NAME);
+        mFavoriteMoviesFile = new File(sdcard, MOVIES_FAVORITE_FILE_NAME);
         readFavoriteMovies();
+        readFavoriteId();
         readGenresMovies();
     }
 
-    public void readFavoriteMovies() {
-        readFromFile(mFavoriteMovies);
-        if(mMoviesFavorite == null){
-            mMoviesFavorite = new HashSet<>();
+    public void readFavoriteMovies(){
+        readFromFile(mFavoriteMoviesFile);
+        if(mFavoriteMovies == null){
+            mFavoriteMovies = new ArrayList<>();
+        }
+    }
+
+    public void readFavoriteId() {
+        readFromFile(mFavoriteIdFile);
+        if(mFavoriteId == null){
+            mFavoriteId = new HashSet<>();
         }
     }
 
@@ -62,45 +84,49 @@ public class FileDataSource {
         }
     }
 
-    private void updateFavoriteMovies() {
-        saveToFile(mFavoriteMovies);
+    private void updateFavorite() {
+        saveToFile(mFavoriteIdFile);
+        saveToFile(mFavoriteMoviesFile);
+        if(mListener != null) {
+            mListener.onChange(mFavoriteMovies);
+            Log.d("TAGG", mFavoriteId.toString());
+        }
     }
 
     public void addFavoriteMovie(Result result) {
-//        if(mMoviesFavorite == null){
-//            mMoviesFavorite = new HashSet<>();
-//        }
-        mMoviesFavorite.add(result.id);
-        updateFavoriteMovies();
+        mFavoriteId.add(result.id);
+        mFavoriteMovies.add(result);
+        updateFavorite();
     }
 
     public void removeFavoriteMovie(Result result){
-        mMoviesFavorite.remove(result.id);
-        updateFavoriteMovies();
+        mFavoriteId.remove(result.id);
+        mFavoriteMovies.remove(result);
+        updateFavorite();
     }
-
 
 
     public void addNewPage(Movies movies) {
         this.mMoviesByGenre.results.addAll(movies.results);
         this.mMoviesByGenre.page++;
+        updateGenresMoviesFile();
     }
 
     public void saveMoviesByGenre(int genreId, Movies movies) {
         this.genreId = genreId;
         mMoviesByGenre = movies;
-        synchronizeWithFavorite();
         updateGenresMoviesFile();
     }
 
     public void updateGenresMoviesFile() {
+        synchronizeWithFavorite();
         saveToFile(mGenresMoviesFile);
     }
 
- /*   public Set<Integer> getMoviesFavorite() {
-        return mMoviesFavorite;
+    public List<Result> getFavoriteMovies() {
+        return mFavoriteMovies;
     }
-*/
+
     public Movies getMoviesByGenre() {
         return mMoviesByGenre;
     }
@@ -110,13 +136,11 @@ public class FileDataSource {
     }
 
     public void synchronizeWithFavorite(){
-        if(mMoviesFavorite != null && mMoviesByGenre !=null) {
-            for (int favorite : mMoviesFavorite) {
+        if(mFavoriteId != null && mMoviesByGenre !=null) {
+            for (int favorite : mFavoriteId) {
                 for (int i = 0; i < mMoviesByGenre.results.size(); i++) {
                     if (favorite == mMoviesByGenre.results.get(i).id) {
                         mMoviesByGenre.results.get(i).setFavorite(true);
-                        Log.d("TAGG", "in sync"+ mMoviesByGenre.results.get(i).title+": "+
-                        mMoviesByGenre.results.get(i).isFavorite());
                     }
                 }
             }
@@ -129,8 +153,11 @@ public class FileDataSource {
             case MOVIES_BY_GENRES_FILE_NAME:
                 data = gson.toJson(mMoviesByGenre);
                 break;
+            case ID_FAVORITE_FILE_NAME:
+                data = gson.toJson(mFavoriteId);
+                break;
             case MOVIES_FAVORITE_FILE_NAME:
-                data = gson.toJson(mMoviesFavorite);
+                data = gson.toJson(mFavoriteMovies);
                 break;
             default:
                 break;
@@ -164,20 +191,36 @@ public class FileDataSource {
     }
 
     private void transformDataFromFile(String data, String name) {
+        Type dataType = getDataType(name);
         switch (name) {
             case MOVIES_BY_GENRES_FILE_NAME:
-                Type typeMovies = new TypeToken<Movies>() {
-                }.getType();
-                mMoviesByGenre = gson.fromJson(data, typeMovies);
+                mMoviesByGenre = gson.fromJson(data, dataType);
+                break;
+            case ID_FAVORITE_FILE_NAME:
+                mFavoriteId = gson.fromJson(data, dataType);
                 break;
             case MOVIES_FAVORITE_FILE_NAME:
-                Type typeFavoriteMovies = new TypeToken<Set<Integer>>() {
-                }.getType();
-                mMoviesFavorite = gson.fromJson(data, typeFavoriteMovies);
+                mFavoriteMovies = gson.fromJson(data, dataType);
                 break;
             default:
                 break;
         }
+    }
+
+    private Type getDataType(String dataName){
+        Type type = null;
+        switch (dataName){
+            case MOVIES_BY_GENRES_FILE_NAME:
+                type = new TypeToken<Movies>() {}.getType();
+                break;
+            case ID_FAVORITE_FILE_NAME:
+                type = new TypeToken<Set<Integer>>() {}.getType();
+                break;
+            case MOVIES_FAVORITE_FILE_NAME:
+                type = new TypeToken<List<Result>>(){}.getType();
+                break;
+        }
+        return type;
     }
 
 }

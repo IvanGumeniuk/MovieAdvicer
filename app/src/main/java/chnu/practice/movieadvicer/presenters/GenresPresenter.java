@@ -72,4 +72,5 @@ public class GenresPresenter implements IGenresContract.IPresenter{
         }
         return result;
     }
+
 }

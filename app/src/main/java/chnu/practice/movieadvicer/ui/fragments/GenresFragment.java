@@ -25,16 +25,15 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private GenreRecyclerAdapter mAdapter;
     private IGenresContract.IPresenter presenter;
-    private RecyclerView recyclerView;
 
     public GenresFragment() {
     }
 
     public static GenresFragment getInstance(String data) {
         GenresFragment fragment = new GenresFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("arg", data);
-        fragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("arg", data);
+//        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -43,10 +42,10 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_genres, container, false);
 
-        Bundle bundle = getArguments();
+//        Bundle bundle = getArguments();
 
         mSwipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        recyclerView = view.findViewById(R.id.genre_recycler);
+        RecyclerView recyclerView = view.findViewById(R.id.genre_recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new GenreRecyclerAdapter(this);
@@ -96,6 +95,5 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
     public void onGenreClick(Genre genre) {
         presenter.moviesRequest(genre.getId());
     }
-
 
 }

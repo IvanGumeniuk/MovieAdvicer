@@ -7,12 +7,12 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="genres">Genres</string>
     <string name="favorite">Favorite</string>
     <string name="top">Top</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="votes">Votes:</string>
     <string name="date_of_release">Date of release:</string>
     <string name="release">Release: </string>

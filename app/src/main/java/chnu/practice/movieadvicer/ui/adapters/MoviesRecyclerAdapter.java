@@ -2,6 +2,7 @@ package chnu.practice.movieadvicer.ui.adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import chnu.practice.movieadvicer.R;
+import chnu.practice.movieadvicer.consts.BundleKeys;
 import chnu.practice.movieadvicer.consts.Constants;
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
 import chnu.practice.movieadvicer.models.MovieModel.Result;
@@ -23,13 +28,27 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private Movies mMovies;
     private MoviesItemClickListener mItemClickListener;
+    private List<Result> mMovieList;
+    private int sMode;
 
-    public MoviesRecyclerAdapter(MoviesItemClickListener listener) {
+    public void setMode(int sMode) {
+        this.sMode = sMode;
+    }
+
+    public MoviesRecyclerAdapter(MoviesItemClickListener listener, int mode) {
         mItemClickListener = listener;
+        sMode = mode;
+        mMovieList = new ArrayList<>();
     }
 
     public void setData(Movies movies) {
         this.mMovies = movies;
+        this.mMovieList = movies.results;
+        this.notifyDataSetChanged();
+    }
+
+    public void setData(List<Result> movieList){
+        this.mMovieList = movieList;
         this.notifyDataSetChanged();
     }
 
@@ -58,7 +77,7 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MoviesViewHolder) {
-            final Result item = mMovies.results.get(position);
+            final Result item = mMovieList.get(position);
             final MoviesViewHolder moviesViewHolder = (MoviesViewHolder) holder;
             moviesViewHolder.mMovieCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,12 +109,14 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 public void onClick(View view) {
                     int imageResource = R.drawable.ic_not_like;
                     int imageTag = Constants.IS_NOT_FAVORITE;
-                    if((int)moviesViewHolder.mFavoriteImage.getTag() == Constants.IS_NOT_FAVORITE){
-                        imageResource = R.drawable.ic_like;
-                        imageTag = Constants.IS_FAVORITE;
+                    if ((int) moviesViewHolder.mFavoriteImage.getTag() == Constants.IS_NOT_FAVORITE) {
+                            imageResource = R.drawable.ic_like;
+                            imageTag = Constants.IS_FAVORITE;
+                        }
+                    if(sMode != BundleKeys.FAVORITE_MODE.ordinal()) {
+                        moviesViewHolder.mFavoriteImage.setTag(imageTag);
+                        moviesViewHolder.mFavoriteImage.setImageResource(imageResource);
                     }
-                    moviesViewHolder.mFavoriteImage.setTag(imageTag);
-                    moviesViewHolder.mFavoriteImage.setImageResource(imageResource);
                     if(mItemClickListener != null){
                         mItemClickListener.OnFavoriteImageClick(item);
                     }
@@ -119,14 +140,23 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return mMovies != null ? mMovies.results.size() + 1 : 0;
+        int size = 0;
+        if(mMovieList != null){
+            size = mMovieList.size();
+        }
+        if(sMode == BundleKeys.MOVIES_BY_GENRE_MODE.ordinal()){
+            size++;
+        }
+        return size;
     }
 
     @Override
     public int getItemViewType(int position) {
         int type = TYPE_ITEM;
-        if (position == mMovies.results.size())
+        if (position == mMovieList.size() && sMode == BundleKeys.MOVIES_BY_GENRE_MODE.ordinal()) {
             type = TYPE_FOOTER;
+            Log.d("TAGGG", mMovieList.size()+" "+position+": "+sMode);
+        }
         return type;
     }
 
