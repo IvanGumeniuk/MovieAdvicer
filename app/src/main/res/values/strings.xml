@@ -16,4 +16,10 @@
     <string name="votes">Votes:</string>
     <string name="date_of_release">Date of release:</string>
     <string name="release">Release: </string>
+    <string name="delete">Delete</string>
+    <string name="confirm_remove">Do you really want to remove \"</string>
+    <string name="from_favorite">\" from favorite?</string>
+    <string name="removed">Removed:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

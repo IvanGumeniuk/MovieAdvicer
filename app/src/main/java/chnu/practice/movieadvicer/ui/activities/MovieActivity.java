@@ -1,5 +1,6 @@
 package chnu.practice.movieadvicer.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,11 @@ public class MovieActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        if(intent != null){
+            getSupportActionBar().setTitle(intent.getStringExtra(BundleKeys.GENRE_NAME.name()));
+        }
 
         mRefreshLayout = findViewById(R.id.moviesSwipeRefreshLayout);
         mAdapter = new MoviesRecyclerAdapter(this, BundleKeys.MOVIES_BY_GENRE_MODE.ordinal());

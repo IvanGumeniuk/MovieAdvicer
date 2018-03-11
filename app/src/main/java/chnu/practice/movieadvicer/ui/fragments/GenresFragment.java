@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import chnu.practice.movieadvicer.R;
 import chnu.practice.movieadvicer.app.Navigation;
+import chnu.practice.movieadvicer.consts.BundleKeys;
 import chnu.practice.movieadvicer.contracts.IGenresContract;
 import chnu.practice.movieadvicer.models.GenreModel.Genre;
 import chnu.practice.movieadvicer.models.GenreModel.Genres;
@@ -82,8 +83,8 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
     }
 
     @Override
-    public void toMovieActivity() {
-        Navigation.toMovieScreen(getActivity());
+    public void toMovieActivity(String genreName) {
+        Navigation.toMovieScreen(getActivity(), BundleKeys.GENRE_NAME.name(), genreName);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class GenresFragment extends BaseFragment implements IGenresContract.IVie
 
     @Override
     public void onGenreClick(Genre genre) {
-        presenter.moviesRequest(genre.getId());
+        presenter.moviesRequest(genre);
     }
 
 }

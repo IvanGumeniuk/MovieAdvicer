@@ -2,6 +2,7 @@ package chnu.practice.movieadvicer.contracts;
 
 import android.app.Activity;
 
+import chnu.practice.movieadvicer.models.GenreModel.Genre;
 import chnu.practice.movieadvicer.models.GenreModel.Genres;
 
 /**
@@ -12,13 +13,13 @@ public interface IGenresContract extends BaseContract{
 
     interface IView extends BaseContract.IView{
         void showGenres(Genres genres);
-        void toMovieActivity();
+        void toMovieActivity(String genreName);
         Activity getViewActivity();
     }
 
     interface IPresenter extends BaseContract.IPresenter{
         void genresRequest();
-        void moviesRequest(int genreId);
+        void moviesRequest(Genre genre);
         boolean checkPermission();
     }
 }

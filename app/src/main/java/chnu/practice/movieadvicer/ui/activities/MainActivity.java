@@ -10,7 +10,6 @@ import chnu.practice.movieadvicer.consts.Constants;
 import chnu.practice.movieadvicer.ui.adapters.SectionPageAdapter;
 import chnu.practice.movieadvicer.ui.fragments.FavoriteFragment;
 import chnu.practice.movieadvicer.ui.fragments.GenresFragment;
-import chnu.practice.movieadvicer.ui.fragments.TopFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -34,7 +33,6 @@ public class MainActivity extends BaseActivity {
         SectionPageAdapter pageAdapter = new SectionPageAdapter(getSupportFragmentManager());
         pageAdapter.addFragment(new GenresFragment(), getString(R.string.genres));
         pageAdapter.addFragment(new FavoriteFragment(), getString(R.string.favorite));
-        pageAdapter.addFragment(new TopFragment(), getString(R.string.top));
         viewPager.setOffscreenPageLimit(Constants.SAVING_PAGE_LIMIT);
         viewPager.setAdapter(pageAdapter);
     }

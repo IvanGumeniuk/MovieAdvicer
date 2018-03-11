@@ -13,7 +13,7 @@ public class Constants {
     public static final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w200/";
     public static final String LANGUAGE_PARAM = "en-EN";
     public static final String SORT_BY = "created_at.asc";
-    public static final short SAVING_PAGE_LIMIT = 3;
+    public static final short SAVING_PAGE_LIMIT = 2;
     public static final int IS_NOT_FAVORITE = 0;
     public static final int IS_FAVORITE = 1;
 }

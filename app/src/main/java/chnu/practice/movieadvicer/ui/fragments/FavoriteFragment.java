@@ -28,7 +28,6 @@ public class FavoriteFragment extends BaseFragment implements IFavoriteContract.
     private MoviesRecyclerAdapter mAdapter;
     private IFavoriteContract.IPresenter mPresenter;
     private RecyclerView mRecyclerView;
-    private View view;
 
     public FavoriteFragment() {
     }
@@ -42,7 +41,7 @@ public class FavoriteFragment extends BaseFragment implements IFavoriteContract.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_favorite, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         mSwipeRefreshLayout = view.findViewById(R.id.favoriteSwipeRefreshLayout);
         mRecyclerView = view.findViewById(R.id.favoriteRecyclerView);
@@ -95,18 +94,18 @@ public class FavoriteFragment extends BaseFragment implements IFavoriteContract.
     public void OnFavoriteImageClick(final Result result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle("Delete");
-        builder.setMessage("Do you really want to remove \""+result.title+"\" from favorite?");
+        builder.setTitle(R.string.delete);
+        builder.setMessage(getString(R.string.confirm_remove)+result.title+getString(R.string.from_favorite));
         builder.setIcon(R.drawable.ic_error);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                     result.setFavorite(false);
                     mPresenter.removeFavorite(result);
-                    showToast("Removed: " + result.title);
+                    showToast(getString(R.string.removed) + result.title);
             }
         });
-        builder.setNegativeButton("Cancel", null);
+        builder.setNegativeButton(R.string.cancel, null);
         builder.show();
     }
 

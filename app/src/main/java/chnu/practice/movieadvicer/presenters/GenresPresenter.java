@@ -9,6 +9,7 @@ import chnu.practice.movieadvicer.DefaultCallback;
 import chnu.practice.movieadvicer.app.RetrofitBase;
 import chnu.practice.movieadvicer.contracts.IGenresContract;
 import chnu.practice.movieadvicer.dataSource.FileDataSource;
+import chnu.practice.movieadvicer.models.GenreModel.Genre;
 import chnu.practice.movieadvicer.models.GenreModel.Genres;
 import chnu.practice.movieadvicer.models.MovieModel.Movies;
 
@@ -41,13 +42,13 @@ public class GenresPresenter implements IGenresContract.IPresenter{
     }
 
     @Override
-    public void moviesRequest(final int genreId) {
-        mRetrofit.moviesRequest(genreId, new DefaultCallback<Movies>(mView) {
+    public void moviesRequest(final Genre genre) {
+        mRetrofit.moviesRequest(genre.getId(), new DefaultCallback<Movies>(mView) {
             @Override
             public void onSuccess(Movies response) {
-                mDataSource.saveMoviesByGenre(genreId, response);
+                mDataSource.saveMoviesByGenre(genre.getId(), response);
                 mView.hideProgress();
-                mView.toMovieActivity();
+                mView.toMovieActivity(genre.getName());
             }
         });
     }

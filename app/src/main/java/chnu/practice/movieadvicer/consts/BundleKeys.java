@@ -8,4 +8,6 @@ public enum  BundleKeys {
     MOVIES_BY_GENRE,
     FAVORITE_MODE,
     MOVIES_BY_GENRE_MODE,
+    GENRE_NAME,
+    BUNDLE_GENRE,
 }
